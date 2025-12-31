@@ -17,20 +17,12 @@
             --gold: #FFD700;
             --rose-gold: #E8B4B8;
             --white: #FFFFFF;
-            --red: #FF4444;
-            --green: #44FF44;
-            --blue: #4444FF;
-            --cyan: #44FFFF;
             --font-head: 'Playfair Display', serif;
             --font-body: 'Poppins', sans-serif;
             --font-deco: 'Great Vibes', cursive;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: radial-gradient(circle at center, var(--bg-light), var(--bg-dark));
@@ -40,6 +32,7 @@
             height: 100vh;
             width: 100vw;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* Canvas Overlay */
@@ -60,7 +53,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            display: none; /* Toggled by JS */
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -70,10 +63,7 @@
             text-align: center;
         }
 
-        .section.active {
-            display: flex;
-            opacity: 1;
-        }
+        .section.active { display: flex; opacity: 1; }
 
         h1, h2, h3 {
             font-family: var(--font-head);
@@ -83,14 +73,13 @@
         button {
             cursor: pointer;
             font-family: var(--font-body);
+            outline: none;
         }
 
+        button:active { transform: scale(0.95); }
+
         /* 📋 SECTION 1: LOADER */
-        #loader-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        #loader-content { display: flex; flex-direction: column; align-items: center; }
 
         .spinner {
             width: 60px;
@@ -118,12 +107,23 @@
             transition: width 3s linear;
         }
 
-        .blink-text {
-            animation: blink 1.5s infinite;
-            font-size: 0.8rem;
-            margin-top: 5px;
-            color: rgba(255,255,255,0.7);
+        /* Start Button (Replaces Auto-fade to allow Audio) */
+        #start-btn {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            border-radius: 30px;
+            font-size: 1rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
+        
+        #start-btn.ready { opacity: 1; pointer-events: all; animation: pulse-btn 2s infinite; }
 
         /* 📋 SECTION 2: FIRECRACKER TEXT */
         #firecracker-text-container {
@@ -144,20 +144,14 @@
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .fc-word.visible {
-            opacity: 1;
-            transform: scale(1);
-            text-shadow: 0 0 20px currentColor;
-        }
+        .fc-word.visible { opacity: 1; transform: scale(1); text-shadow: 0 0 20px currentColor; }
         
-        /* Specific Word Styles */
         .w-qasim { color: var(--gold); }
         .w-noor { color: var(--rose-gold); }
-        .w-hassan { color: var(--cyan); }
+        .w-hassan { color: #44FFFF; }
         .w-hny { font-size: 3rem; background: linear-gradient(to right, #ff00cc, #333399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .w-2026 { font-size: 6rem; color: var(--gold); -webkit-text-stroke: 1px silver; }
 
-        /* The rocket visual element */
         .rocket {
             position: absolute;
             bottom: 0;
@@ -168,7 +162,7 @@
             display: none;
         }
 
-        /* 📋 SECTION 4: GREETING CARD */
+        /* 📋 SECTION 3: GREETING CARD */
         .card-scene {
             perspective: 1000px;
             width: 300px;
@@ -184,9 +178,7 @@
             transition: transform 1s;
         }
 
-        .card.open {
-            transform: rotateY(-180deg);
-        }
+        .card.open { transform: rotateY(-180deg); }
 
         .card-front, .card-back {
             position: absolute;
@@ -201,178 +193,72 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .card-front {
-            background: #800020;
-            border: 2px solid var(--gold);
-            color: var(--gold);
-        }
-
+        .card-front { background: #800020; border: 2px solid var(--gold); color: var(--gold); }
+        
         .wax-seal {
-            width: 60px;
-            height: 60px;
-            background: #b30000;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 60px; height: 60px; background: #b30000; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.3);
-            font-family: var(--font-deco);
-            font-size: 1.5rem;
-            border: 2px dashed rgba(255,215,0,0.5);
-            margin-top: 20px;
+            font-family: var(--font-deco); font-size: 1.5rem;
+            border: 2px dashed rgba(255,215,0,0.5); margin-top: 20px;
         }
 
-        .card-back {
-            background: #fff;
-            color: #333;
-            transform: rotateY(180deg);
-            padding: 20px;
-            text-align: center;
-        }
+        .card-back { background: #fff; color: #333; transform: rotateY(180deg); padding: 20px; text-align: center; }
 
         .card-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #800020;
-            color: white;
-            border: none;
-            border-radius: 20px;
+            margin-top: 20px; padding: 10px 20px;
+            background: #800020; color: white;
+            border: none; border-radius: 20px;
             transition: transform 0.2s;
         }
 
-        .card-btn:hover { transform: scale(1.05); }
-
-        /* 📋 SECTION 5: MUSIC */
-        .music-container {
+        /* 📋 SECTION 4: MUSIC & GOALS */
+        .music-container, .goals-container {
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(10px);
             padding: 2rem;
             border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.1);
-            width: 90%;
-            max-width: 500px;
+            width: 90%; max-width: 400px;
         }
 
         .song-option {
-            padding: 15px;
-            margin: 10px 0;
+            padding: 15px; margin: 10px 0;
             background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .song-option.selected {
-            background: linear-gradient(45deg, #800020, #4a0012);
-            border: 1px solid var(--gold);
-        }
-
-        .vinyl-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #111;
-            border: 2px solid #333;
-            animation: spin 2s linear infinite;
-            animation-play-state: paused;
+            border-radius: 10px; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
         }
         
-        .selected .vinyl-icon { animation-play-state: running; }
-
+        .song-option.selected { background: linear-gradient(45deg, #800020, #4a0012); border: 1px solid var(--gold); }
+        
+        .vinyl-icon { width: 40px; height: 40px; border-radius: 50%; background: #111; border: 2px solid #333; }
+        
         .continue-btn {
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: var(--gold);
-            color: #000;
-            border: none;
-            border-radius: 30px;
-            font-weight: bold;
-            opacity: 0.5;
-            pointer-events: none;
-            transition: 0.3s;
+            margin-top: 20px; padding: 12px 30px;
+            background: var(--gold); color: #000;
+            border: none; border-radius: 30px; font-weight: bold;
+            opacity: 0.5; pointer-events: none; width: 100%;
         }
-
+        
         .continue-btn.active { opacity: 1; pointer-events: all; box-shadow: 0 0 15px var(--gold); }
 
-        /* 📋 SECTION 6: GOALS */
-        .goals-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .goal-input-group {
-            position: relative;
-        }
-
         .goal-input {
-            width: 100%;
-            padding: 12px 15px 12px 40px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 8px;
-            color: white;
-            font-family: var(--font-body);
+            width: 100%; padding: 12px; margin-bottom: 10px;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px; color: white; font-family: var(--font-body);
         }
 
-        .goal-input:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 10px rgba(255,215,0,0.2);
-        }
-
-        .goal-icon {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        /* 📋 SECTION 7: COUNTDOWN */
-        .countdown-circle {
-            position: relative;
-            width: 200px;
-            height: 200px;
-        }
-        
-        .year-transition {
-            font-size: 3rem;
-            font-weight: bold;
-            font-family: var(--font-head);
-            position: relative;
-        }
-        
-        /* 📋 SECTION 8: FINAL */
-        .final-names {
-            font-size: 2rem;
-            margin-top: 20px;
-            line-height: 1.6;
-        }
-        
-        .name-span {
-            display: inline-block;
-            margin: 0 10px;
-            font-family: var(--font-head);
-            font-weight: bold;
-        }
-
-        /* Animations */
+        /* 📋 ANIMATIONS */
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes glow { from { box-shadow: 0 0 5px var(--gold); } to { box-shadow: 0 0 20px var(--gold), 0 0 10px white; } }
-        @keyframes blink { 50% { opacity: 0.3; } }
+        @keyframes pulse-btn { 0% { box-shadow: 0 0 0 0 rgba(255,215,0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255,215,0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255,215,0, 0); } }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        /* Mobile Adjustments */
+        
+        /* Mobile */
         @media (max-width: 600px) {
             .fc-word { font-size: 2.5rem; }
             .w-2026 { font-size: 4rem; }
             .card-scene { width: 260px; height: 380px; }
-            .final-names { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -381,23 +267,21 @@
     <canvas id="global-canvas"></canvas>
 
     <audio id="bg-music" loop>
-        <source src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" type="audio/mpeg">
+        <source src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" type="audio/mpeg">
     </audio>
 
     <div id="section-loader" class="section active">
         <div id="loader-content">
             <div class="spinner"></div>
-            <h2 style="font-weight: 300; letter-spacing: 2px;">Preparing Celebration</h2>
-            <div class="progress-container">
-                <div class="progress-bar" id="load-bar"></div>
-            </div>
-            <p class="blink-text">Please wait...</p>
+            <h2 style="font-weight: 300;">Preparing Celebration</h2>
+            <div class="progress-container"><div class="progress-bar" id="load-bar"></div></div>
+            <p id="loading-text" style="margin-top:10px; font-size: 0.8rem; opacity: 0.7;">Loading Assets...</p>
+            <button id="start-btn" onclick="startCelebration()">Enter Celebration ✨</button>
         </div>
     </div>
 
     <div id="section-firecracker" class="section">
-        <div id="firecracker-text-container">
-            </div>
+        <div id="firecracker-text-container"></div>
     </div>
 
     <div id="section-card" class="section">
@@ -412,7 +296,7 @@
                     <h2 style="color: #800020; margin-bottom: 10px;">Happy New Year</h2>
                     <p style="font-size: 0.9rem; line-height: 1.6;">
                         To Qasim, Noor, and Hassan.<br><br>
-                        May the coming year bring you success, joy, and endless possibilities. Let's celebrate the journey ahead!
+                        May 2026 bring you success and joy!
                     </p>
                     <button class="card-btn" onclick="nextSection('section-music', event)">Reveal Surprise ✨</button>
                 </div>
@@ -421,351 +305,322 @@
     </div>
 
     <div id="section-music" class="section">
-        <h2 style="margin-bottom: 20px;">Set the Vibe 🎵</h2>
+        <h2>Set the Vibe 🎵</h2>
         <div class="music-container">
-            <div class="song-option" onclick="selectSong(this, 'Rahim Dekait')">
+            <div class="song-option" onclick="selectSong(this)">
                 <div style="display:flex; align-items:center; gap:10px;">
                     <div class="vinyl-icon"></div>
-                    <div>
-                        <div style="font-weight:bold;">Rahim Dekait</div>
-                        <div style="font-size:0.8rem; opacity:0.7;">Vibe Mix</div>
-                    </div>
+                    <div><b>Rahim Dekait</b><br><small>Vibe Mix</small></div>
                 </div>
-                <div>▶</div>
             </div>
-            <div class="song-option" onclick="selectSong(this, 'Mera Dil Ye Pukaray Aaja')">
+            <div class="song-option" onclick="selectSong(this)">
                 <div style="display:flex; align-items:center; gap:10px;">
                     <div class="vinyl-icon"></div>
-                    <div>
-                        <div style="font-weight:bold;">Mera Dil Ye Pukaray Aaja</div>
-                        <div style="font-size:0.8rem; opacity:0.7;">Instrumental</div>
-                    </div>
+                    <div><b>Mera Dil Ye Pukaray</b><br><small>Instrumental</small></div>
                 </div>
-                <div>▶</div>
             </div>
-            <button id="music-btn" class="continue-btn" onclick="nextSection('section-goals')">Continue to Set Goals 🎯</button>
+            <button id="music-btn" class="continue-btn" onclick="nextSection('section-goals')">Continue 🎯</button>
         </div>
     </div>
 
     <div id="section-goals" class="section">
-        <h2 style="margin-bottom: 10px;">2026 Resolutions</h2>
-        <p style="margin-bottom: 20px; opacity: 0.8; font-size: 0.9rem;">What will you achieve, Qasim, Noor & Hassan?</p>
+        <h2>2026 Resolutions</h2>
         <div class="goals-container">
-            <div class="goal-input-group">
-                <span class="goal-icon">⭐</span>
-                <input type="text" class="goal-input" placeholder="Main Goal">
-            </div>
-            <div class="goal-input-group">
-                <span class="goal-icon">💪</span>
-                <input type="text" class="goal-input" placeholder="Health Goal">
-            </div>
-            <div class="goal-input-group">
-                <span class="goal-icon">💰</span>
-                <input type="text" class="goal-input" placeholder="Financial Goal">
-            </div>
-            <button class="continue-btn active" style="width:100%" onclick="validateAndSubmit()">Submit & Start Countdown 🚀</button>
+            <input type="text" class="goal-input" placeholder="⭐ Main Goal for Qasim">
+            <input type="text" class="goal-input" placeholder="🌹 Main Goal for Noor">
+            <input type="text" class="goal-input" placeholder="🔥 Main Goal for Hassan">
+            <button class="continue-btn active" onclick="validateAndSubmit()">Submit & Start 🚀</button>
         </div>
     </div>
 
     <div id="section-countdown" class="section">
-        <div class="countdown-circle">
-            <div class="year-transition" id="year-display">2025</div>
-        </div>
-        <p id="countdown-status" style="margin-top: 20px; color: var(--gold);">Goodbye 2025...</p>
+        <h1 id="year-display" style="font-size: 4rem;">2025</h1>
+        <p id="countdown-status" style="color: var(--gold);">Goodbye 2025...</p>
     </div>
 
     <div id="section-final" class="section">
         <h1 class="w-2026" style="animation: float 3s ease-in-out infinite;">2026</h1>
-        <h2 style="font-family: var(--font-deco); font-size: 4rem; color: var(--white);">Happy New Year!</h2>
-        <div class="final-names">
-            <span class="name-span w-qasim" style="display:block;">✨ Qasim</span>
-            <span class="name-span w-noor" style="display:block;">🌹 Noor</span>
-            <span class="name-span w-hassan" style="display:block;">🔥 Hassan</span>
+        <h2 style="font-family: var(--font-deco); font-size: 4rem;">Happy New Year!</h2>
+        <div style="margin-top:20px; font-size:1.5rem;">
+            <span class="w-qasim">✨ Qasim</span> | <span class="w-noor">🌹 Noor</span> | <span class="w-hassan">🔥 Hassan</span>
         </div>
-        <button class="card-btn" style="margin-top: 30px; background: transparent; border: 1px solid white;" onclick="location.reload()">Replay Celebration ↺</button>
+        <button class="card-btn" style="margin-top: 30px; background: transparent; border: 1px solid white;" onclick="location.reload()">Replay ↺</button>
     </div>
 
     <script>
-        /* 📋 LOGIC & ANIMATIONS */
+        /* 🔊 AUDIO ENGINE (Synthesizer) */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        const SoundSys = {
+            // Haptic helper
+            vibrate: (ms) => {
+                if(navigator.vibrate) navigator.vibrate(ms);
+            },
+
+            // 1. Click Sound (Short Beep)
+            playClick: () => {
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                SoundSys.vibrate(20); // Gentle tap
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+                
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            },
+
+            // 2. Rocket Launch (Slide Whistle)
+            playLaunch: () => {
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 1.0);
+                
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.0);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1.0);
+            },
+
+            // 3. Explosion (Filtered White Noise)
+            playExplosion: () => {
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                SoundSys.vibrate([50, 30, 50]); // Strong vibration pattern
+
+                const bufferSize = audioCtx.sampleRate * 2; // 2 seconds
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+
+                // Generate noise
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+
+                const gain = audioCtx.createGain();
+                
+                // Lowpass filter for "Boom" sound
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 1000;
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                gain.gain.setValueAtTime(1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+
+                noise.start();
+            }
+        };
+
+        // Attach click sounds to all buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', SoundSys.playClick);
+        });
+
+        /* 📋 VISUALS & LOGIC */
         const canvas = document.getElementById('global-canvas');
         const ctx = canvas.getContext('2d');
-        
-        // Resize Canvas
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize);
         resize();
 
-        /* --- PARTICLE SYSTEM --- */
         let particles = [];
-        let fireworks = [];
         let stars = [];
 
-        // Star Background
-        for(let i=0; i<100; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2,
-                blink: Math.random() * 0.05
-            });
-        }
+        // Stars
+        for(let i=0; i<80; i++) stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, size:Math.random()*2});
 
         class Particle {
-            constructor(x, y, color, speed, direction) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
-                this.size = Math.random() * 3 + 1;
-                this.speedX = Math.cos(direction) * speed;
-                this.speedY = Math.sin(direction) * speed;
-                this.gravity = 0.05;
-                this.alpha = 1;
-                this.decay = Math.random() * 0.01 + 0.005;
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                this.vx = (Math.random()-0.5)*6; this.vy = (Math.random()-0.5)*6;
+                this.alpha = 1; this.gravity = 0.05;
             }
-            update() {
-                this.speedY += this.gravity;
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.alpha -= this.decay;
-            }
+            update() { this.vy += this.gravity; this.x += this.vx; this.y += this.vy; this.alpha -= 0.015; }
             draw() {
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
+                ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color;
+                ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI*2); ctx.fill();
             }
         }
 
         function createExplosion(x, y, colors) {
-            const count = 50;
-            for (let i = 0; i < count; i++) {
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                const speed = Math.random() * 5 + 2;
-                const direction = Math.random() * Math.PI * 2;
-                particles.push(new Particle(x, y, color, speed, direction));
+            SoundSys.playExplosion(); // 🔊 Sound Trigger
+            for(let i=0; i<40; i++) {
+                particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
             }
         }
 
         function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Stars
+            ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle = "white";
-            stars.forEach(star => {
-                ctx.globalAlpha = Math.abs(Math.sin(Date.now() * 0.001 + star.x)) * 0.8;
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.size, 0, Math.PI*2);
-                ctx.fill();
+            stars.forEach(s => { ctx.globalAlpha = Math.random(); ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill(); });
+            
+            particles.forEach((p,i) => {
+                p.update(); p.draw();
+                if(p.alpha<=0) particles.splice(i,1);
             });
-
-            // Update Particles
-            particles.forEach((p, index) => {
-                p.update();
-                p.draw();
-                if (p.alpha <= 0) particles.splice(index, 1);
-            });
-
             requestAnimationFrame(animate);
         }
         animate();
 
-        /* --- SECTION CONTROLLERS --- */
+        /* --- LOGIC FLOW --- */
         
         // 1. Loader
         window.onload = () => {
             const bar = document.getElementById('load-bar');
             setTimeout(() => { bar.style.width = "100%"; }, 100);
-            
             setTimeout(() => {
-                transitionTo('section-loader', 'section-firecracker');
-                startFirecrackerSequence();
-            }, 3500);
+                document.getElementById('loading-text').innerText = "Ready!";
+                document.getElementById('start-btn').classList.add('ready');
+            }, 3000);
         };
+
+        function startCelebration() {
+            SoundSys.playClick();
+            // Transition
+            const loader = document.getElementById('section-loader');
+            const fire = document.getElementById('section-firecracker');
+            loader.style.opacity = 0;
+            setTimeout(() => {
+                loader.classList.remove('active');
+                fire.classList.add('active');
+                fire.style.opacity = 1;
+                startFirecrackerSequence();
+            }, 800);
+        }
 
         function transitionTo(fromId, toId) {
             const fromEl = document.getElementById(fromId);
             const toEl = document.getElementById(toId);
-            
             fromEl.style.opacity = 0;
             setTimeout(() => {
                 fromEl.classList.remove('active');
                 toEl.classList.add('active');
-                // Force reflow
-                void toEl.offsetWidth; 
-                toEl.style.opacity = 1;
+                void toEl.offsetWidth; toEl.style.opacity = 1;
             }, 800);
         }
 
-        // 2. Firecracker Sequence
+        // 2. Firecrackers
         function startFirecrackerSequence() {
             const container = document.getElementById('firecracker-text-container');
             const sequence = [
-                { text: "Hello", color: "#FFF", effects: ["#FFF", "gold"] },
-                { text: "Dears", color: "#E8B4B8", effects: ["pink", "white"] },
-                { text: "Qasim", class: "w-qasim", effects: ["gold", "orange"] },
-                { text: "Noor", class: "w-noor", effects: ["#E8B4B8", "red"] },
-                { text: "Hassan", class: "w-hassan", effects: ["cyan", "blue"] },
-                { text: "Happy New Year", class: "w-hny", effects: ["purple", "yellow", "cyan"] },
-                { text: "2026", class: "w-2026", effects: ["gold", "silver"] }
+                { text: "Hello", color: "#FFF" },
+                { text: "Dears", color: "#E8B4B8" },
+                { text: "Qasim", class: "w-qasim" },
+                { text: "Noor", class: "w-noor" },
+                { text: "Hassan", class: "w-hassan" },
+                { text: "Happy New Year", class: "w-hny" },
+                { text: "2026", class: "w-2026" }
             ];
 
             let delay = 0;
-
             sequence.forEach((item, index) => {
                 setTimeout(() => {
-                    // 1. Launch Rocket visual
+                    // Rocket
+                    SoundSys.playLaunch(); // 🔊 Sound
                     const rocket = document.createElement('div');
                     rocket.className = 'rocket';
-                    rocket.style.left = '50%';
-                    rocket.style.display = 'block';
+                    rocket.style.left = '50%'; rocket.style.display = 'block';
                     container.appendChild(rocket);
-
-                    // Animate Rocket
-                    const startY = window.innerHeight;
-                    const endY = window.innerHeight / 2;
-                    let currentY = startY;
                     
-                    const rocketAnim = setInterval(() => {
-                        currentY -= 15;
-                        rocket.style.top = currentY + 'px';
-                        
-                        if(currentY <= endY) {
-                            clearInterval(rocketAnim);
+                    let y = window.innerHeight;
+                    const interval = setInterval(() => {
+                        y -= 15; rocket.style.top = y + 'px';
+                        if(y < window.innerHeight/2) {
+                            clearInterval(interval);
                             rocket.remove();
+                            // Explosion & Text
+                            createExplosion(window.innerWidth/2, window.innerHeight/2, ['gold', 'red', 'white']);
                             
-                            // 2. Explosion
-                            createExplosion(window.innerWidth/2, window.innerHeight/2, item.effects);
-                            
-                            // 3. Show Text
-                            const wordEl = document.createElement('div');
-                            wordEl.innerText = item.text;
-                            wordEl.className = 'fc-word ' + (item.class || '');
-                            if(item.color) wordEl.style.color = item.color;
-                            container.appendChild(wordEl);
-                            
-                            setTimeout(() => wordEl.classList.add('visible'), 50);
+                            const el = document.createElement('div');
+                            el.innerText = item.text;
+                            el.className = 'fc-word ' + (item.class||'');
+                            if(item.color) el.style.color = item.color;
+                            container.appendChild(el);
+                            setTimeout(() => el.classList.add('visible'), 50);
 
-                            // Remove text before next (except last)
-                            if (index < sequence.length - 1) {
-                                setTimeout(() => {
-                                    wordEl.style.opacity = 0;
-                                    wordEl.style.transform = "scale(1.5)";
-                                }, 2000);
+                            if(index < sequence.length-1) {
+                                setTimeout(() => { el.style.opacity = 0; el.style.transform = "scale(1.5)"; }, 2000);
                             } else {
-                                // End of sequence
-                                setTimeout(() => {
-                                    transitionTo('section-firecracker', 'section-card');
-                                }, 3000);
+                                setTimeout(() => transitionTo('section-firecracker', 'section-card'), 3000);
                             }
                         }
-                    }, 16); // ~60fps
-
+                    }, 16);
                 }, delay);
-                delay += 3000; // Time between words
+                delay += 3000;
             });
         }
 
-        // 3. Greeting Card
+        // 3. Card
         function toggleCard() {
             document.getElementById('greeting-card').classList.toggle('open');
+            SoundSys.playClick();
         }
-
-        function nextSection(nextId, event) {
-            if(event) event.stopPropagation(); // Prevent card toggle
-            const current = document.querySelector('.section.active').id;
-            transitionTo(current, nextId);
+        function nextSection(id, e) {
+            if(e) e.stopPropagation();
+            SoundSys.playClick();
+            transitionTo(document.querySelector('.section.active').id, id);
         }
 
         // 4. Music
-        function selectSong(element, songName) {
-            document.querySelectorAll('.song-option').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
+        function selectSong(el) {
+            document.querySelectorAll('.song-option').forEach(x => x.classList.remove('selected'));
+            el.classList.add('selected');
             document.getElementById('music-btn').classList.add('active');
-            
-            // Try to play dummy audio to enable audio context
-            document.getElementById('bg-music').play().catch(e => console.log("Autoplay blocked, waiting for interaction"));
+            SoundSys.playClick();
         }
 
         // 5. Goals
         function validateAndSubmit() {
-            const inputs = document.querySelectorAll('.goal-input');
-            let hasValue = false;
-            inputs.forEach(input => {
-                if(input.value.trim() !== "") hasValue = true;
-            });
-
-            if(hasValue) {
-                transitionTo('section-goals', 'section-countdown');
-                startCountdown();
-            } else {
-                inputs[0].placeholder = "Please enter at least one goal!";
-                inputs[0].style.borderColor = "red";
-                setTimeout(() => inputs[0].style.borderColor = "rgba(255,255,255,0.2)", 1000);
-            }
+            SoundSys.playClick();
+            transitionTo('section-goals', 'section-countdown');
+            startCountdown();
         }
 
         // 6. Countdown
         function startCountdown() {
+            let count = 0;
             const yearEl = document.getElementById('year-display');
-            const statusEl = document.getElementById('countdown-status');
-            
-            let progress = 0;
             const interval = setInterval(() => {
-                progress += 1;
+                count++;
+                if(count%15===0) createExplosion(Math.random()*canvas.width, Math.random()*canvas.height, ['#FFF']);
                 
-                // Random explosions during countdown
-                if(progress % 20 === 0) {
-                     createExplosion(Math.random() * canvas.width, Math.random() * canvas.height, ['#FFF', 'gold']);
-                }
-
-                if(progress === 50) {
-                    statusEl.innerText = "Ready for the jump...";
-                }
-                
-                if(progress === 80) {
-                    statusEl.innerText = "Here it comes!";
-                    yearEl.style.transform = "scale(1.5)";
-                    yearEl.style.opacity = 0;
-                }
-
-                if(progress >= 100) {
+                if(count >= 80) {
                     clearInterval(interval);
                     yearEl.innerText = "2026";
                     yearEl.style.color = "var(--gold)";
-                    yearEl.style.opacity = 1;
                     yearEl.style.transform = "scale(2)";
                     
-                    // Big Explosion
+                    // Grand Finale
                     for(let i=0; i<10; i++) {
-                        setTimeout(() => {
-                            createExplosion(canvas.width/2 + (Math.random()*200-100), canvas.height/2 + (Math.random()*200-100), ['gold', 'red', 'cyan', 'purple']);
-                        }, i*200);
+                        setTimeout(() => createExplosion(canvas.width/2+(Math.random()*200-100), canvas.height/2+(Math.random()*200-100), ['red','gold','cyan']), i*200);
                     }
-                    
-                    setTimeout(() => {
-                        transitionTo('section-countdown', 'section-final');
-                        startFinalFireworks();
-                    }, 1500);
+                    setTimeout(() => transitionTo('section-countdown', 'section-final'), 2000);
                 }
-            }, 50); // 5 seconds approx
-        }
-
-        // 7. Final Celebration (Looping Fireworks)
-        function startFinalFireworks() {
-            setInterval(() => {
-                if(document.getElementById('section-final').classList.contains('active')) {
-                    const x = Math.random() * canvas.width;
-                    const y = Math.random() * (canvas.height / 2);
-                    const colors = ['#FF4444', '#44FF44', '#44FFFF', '#FFFF44', '#FF44FF'];
-                    createExplosion(x, y, colors);
-                }
-            }, 800);
+            }, 50);
         }
 
     </script>
